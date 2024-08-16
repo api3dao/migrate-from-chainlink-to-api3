@@ -57,7 +57,7 @@ Let us reiterate the related contract docstrings:
 
 ### Chainlink interfaces
 
-At the time of writing this, Chainlink supports three interfaces:
+At the time of writing this, Chainlink supports two interfaces and a combination of them:
 
 - [AggregatorInterface](./vendor/AggregatorInterface.sol) (can also be thought of as AggregatorInterfaceV2)
 - [AggregatorV3Interface](./vendor/AggregatorV3Interface.sol)
@@ -75,9 +75,9 @@ There are two important points here:
 
 There are two main reasons for incompatibilities:
 
-1. If the dApp depends `roundId` increasing with every feed update
+1. If the dApp depends on `roundId` increasing with every feed update
 1. If the dApp depends on being able to query past updates with `getRoundData()` of AggregatorV3Interface
 
 Our observation is that almost all dApps only use the feed value, either using `latestAnswer()` of AggregatorInterface, or `answer` returned by `latestRoundData()` of AggregatorV3Interface, in which case API3 feeds will be perfectly compatible.
 Furthermore, the adapter contract we provide in this repo makes a best effort in returning sane approximations for the rest of the values.
-In the case that your contract utilizes values other than the answer, you are strongly recommended to make sure that these approximations will not cause any issues.
+If your contract utilizes values other than the answer, you are strongly recommended to make sure that these approximations will not cause any issues.

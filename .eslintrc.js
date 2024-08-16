@@ -3,5 +3,10 @@ module.exports = {
   parserOptions: {
     project: ['./tsconfig.json'],
   },
-  rules: {},
+  rules: {
+    camelcase: 'off',
+    'no-console': 'off',
+    'functional/no-promise-reject': 'off',
+    'unicorn/prefer-spread': 'off',
+  },
 };

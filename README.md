@@ -13,6 +13,35 @@ A dApp can be designed to read a Chainlink feed in two ways:
 
 Both alternatives can be migrated to using an API3 feed instead through the adapter contract provided in this repo.
 
+## Instructions
+
+1. Install the dependencies and build
+
+```sh
+yarn && yarn build
+```
+
+2. Create a `.env` file similar to `example.env` with the mnemonic of the wallet that you will use to deploy the contract
+
+3. Use [API3 Market](https://market.api3.org/) to find the API3 feed you want to use
+
+4. Get the address of the proxy contract that belongs to the feed.
+   For example, clicking the Integrate button at https://market.api3.org/polygon/eth-usd displays the proxy address, `0x98643CB1BDA4060d8BD2dc19bceB0acF6F03ae17`.
+
+5. Deploy Api3ProxyToAggregatorV2V3Interface that wraps this proxy by running
+
+```sh
+NETWORK=polygon PROXY_ADDRESS=0x98643CB1BDA4060d8BD2dc19bceB0acF6F03ae17 yarn deploy-deterministically
+```
+
+Note that `NETWORK` is identical to what is in the Market URL.
+
+You can also print the expected address after deployment by running
+
+```sh
+PROXY_ADDRESS=0x98643CB1BDA4060d8BD2dc19bceB0acF6F03ae17 yarn print-deterministic-deployment-address
+```
+
 ## Differences between API3 and Chainlink feed interfaces
 
 There are many architectural, protocol-related and operational differences between Chainlink and API3 feeds.

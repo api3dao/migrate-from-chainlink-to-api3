@@ -35,6 +35,11 @@ contract Api3ProxyToAggregatorV2V3Interface is AggregatorV2V3Interface {
         api3Proxy = api3Proxy_;
     }
 
+    /// @dev It is assumed that the contract calling this function validates
+    /// the value they get from AggregatorV2V3Interface, e.g., by checking if
+    /// it is a positive value if it is supposed to represent the spot price of
+    /// an asset. Therefore, this contract does not do any validation and
+    /// leaves that responsibility to the caller.
     function latestAnswer() external view override returns (int256 value) {
         (value, ) = IProxy(api3Proxy).read();
     }
@@ -139,6 +144,8 @@ contract Api3ProxyToAggregatorV2V3Interface is AggregatorV2V3Interface {
         answeredInRound = _roundId;
     }
 
+    /// @dev Similar to `latestAnswer()`, we leave the validation of the
+    /// returned values to the caller.
     function latestRoundData()
         external
         view

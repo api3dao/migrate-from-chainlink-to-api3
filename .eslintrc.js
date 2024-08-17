@@ -7,6 +7,7 @@ module.exports = {
     camelcase: 'off',
     'no-console': 'off',
     'functional/no-promise-reject': 'off',
+    'unicorn/filename-case': 'off',
     'unicorn/prefer-spread': 'off',
   },
 };

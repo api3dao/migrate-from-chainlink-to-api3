@@ -110,15 +110,17 @@ Api3ProxyToAggregatorV2V3Interface should be used as is when the following apply
 - In the case that the dApp uses the current feed timestamp (`latestTimestamp()` of AggregatorInterface or `updatedAt` returned by `latestRoundData()` of AggregatorV3Interface), it is only for a staleness check, e.g., to check if the feed has been updated in the last heartbeat interval.
 - If any other values are used, they do not affect the contract or off-chain infrastructure logic.
   For example, the dApp only emits `roundId` strictly for logging purposes.
+- The off-chain infrastructure does not depend on the events defined in AggregatorInterface.
 
 Alternatively, Api3ProxyToAggregatorV2V3Interface should not be used as is, and a more specialized adapter contract needs to be implemented if any of the following applies:
 
 - The dApp logic depends on Chainlink feed idiosyncrasies, such as the round ID increasing with every update.
 - The dApp depends on being able to query past values using `getAnswer()` or `getTimestamp()` of AggregatorInterface, or `getRoundData()` of AggregatorV3Interface.
+- The off-chain infrastructure depends on the events defined in AggregatorInterface.
 
 ### Specialized adapter contracts
 
-An adapter that satisfies all Chainlink feed idiosyncrasies would need to create a new round each time its latest values are read.
+An adapter that satisfies all Chainlink feed idiosyncrasies would need to create a new round each time its latest values are read and emit the respective events.
 For example, `roundId` can be a storage variable that gets incremented each time a function starting with `latest-` is called.
 Furthermore, users that are planning to refer to a round in the past would need to ensure that the round is created by sending a transaction that calls any of the functions that starts with `latest-`.
 

@@ -3,6 +3,11 @@ import { ethers } from 'hardhat';
 import * as deploy from '../src/deploy';
 
 async function main() {
+  if ((await ethers.provider.getCode(deploy.CREATE2_FACTORY_ADDRESS)) === '0x') {
+    throw new Error(
+      `CREATE2 factory at ${deploy.CREATE2_FACTORY_ADDRESS} is not deployed. Please refer to https://github.com/Arachnid/deterministic-deployment-proxy/`
+    );
+  }
   const proxyAddress = process.env.PROXY_ADDRESS;
   if (!proxyAddress) {
     throw new Error('Environment variable PROXY_ADDRESS is not defined');

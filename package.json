@@ -23,7 +23,7 @@
   "scripts": {
     "build": "hardhat compile && tsc -p tsconfig.build.json",
     "deploy-deterministically": "hardhat run scripts/deploy-deterministically.ts --network $NETWORK",
-    "lint": "pnpm run prettier:check && pnpm run lint:eslint && pnpm run lint:solhint",
+    "lint": "yarn prettier:check && yarn lint:eslint && yarn lint:solhint",
     "lint:eslint": "eslint . --ext .js,.ts",
     "lint:solhint": "solhint ./contracts/**/*.sol",
     "prettier:check": "prettier --check \"./**/*.{js,ts,md,json,sol}\"",

@@ -18,7 +18,7 @@ interface IProxy {
 /// recommended to be deployed deterministically for its address to be easily
 /// verifiable as well.
 contract Api3ProxyToAggregatorV2V3Interface is AggregatorV2V3Interface {
-    error Api3ProxyAddressISZero();
+    error Api3ProxyAddressIsZero();
 
     error RoundIdIsNotCurrent();
 
@@ -30,7 +30,7 @@ contract Api3ProxyToAggregatorV2V3Interface is AggregatorV2V3Interface {
     /// @param api3Proxy_ API3 feed proxy address
     constructor(address api3Proxy_) {
         if (api3Proxy_ == address(0)) {
-            revert Api3ProxyAddressISZero();
+            revert Api3ProxyAddressIsZero();
         }
         api3Proxy = api3Proxy_;
     }

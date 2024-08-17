@@ -3,7 +3,6 @@
 dApps migrate from Chainlink to API3 feeds for reasons such as:
 
 - API3 feeds are trust-minimized due to being based on first-party oracles, while alternatives rely on middlemen (Chainlink node operators, Wormhole validators, etc.) in addition to the data sources.
-
 - API3 allows dApps to recoup the value they otherwise would have bled as MEV through the OEV mechanism, effectively providing dApps an entirely new revenue source.
 
 In addition, it is a common case for a dApp that is designed to work with Chainlink feeds to be deployed on newly launched chains.

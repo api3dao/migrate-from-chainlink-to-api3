@@ -24,18 +24,13 @@
     "build": "hardhat compile && tsc -p tsconfig.build.json",
     "deploy-deterministically": "hardhat run scripts/deploy-deterministically.ts --network $NETWORK",
     "lint": "pnpm run prettier:check && pnpm run lint:eslint && pnpm run lint:solhint",
-    "lint:solhint": "solhint ./contracts/**/*.sol",
     "lint:eslint": "eslint . --ext .js,.ts",
-    "prepack": "./prepack.sh",
+    "lint:solhint": "solhint ./contracts/**/*.sol",
     "prettier:check": "prettier --check \"./**/*.{js,ts,md,json,sol}\"",
     "prettier": "prettier --write \"./**/*.{js,ts,md,json,sol}\"",
     "print-deterministic-deployment-address": "hardhat run scripts/print-deterministic-deployment-address.ts",
-    "postpack": "./postpack.sh",
     "test": "hardhat test --parallel",
-    "test:coverage": "hardhat coverage",
-    "validate-deployment-config": "hardhat run scripts/validate-deployment-config.ts",
-    "validate-deployments": "hardhat run scripts/validate-deployments.ts",
-    "verify-deployments": "hardhat run scripts/verify-deployments.ts"
+    "test:coverage": "hardhat coverage"
   },
   "devDependencies": {
     "@api3/chains": "^9.2.1",

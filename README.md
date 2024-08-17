@@ -1,8 +1,8 @@
-# Migration Guide from Chainlink to API3
+# Migration Guide from Chainlink to API3 Feeds
 
-dApps migrate from using Chainlink feeds to API3 feeds for reasons such as:
+dApps migrate from Chainlink to API3 feeds for reasons such as:
 
-- API3 data feeds are trust-minimized due to being based on first-party oracles, while alternatives rely on middlemen (Chainlink node operators, Wormhole validators, etc.) in addition to the data sources.
+- API3 feeds are trust-minimized due to being based on first-party oracles, while alternatives rely on middlemen (Chainlink node operators, Wormhole validators, etc.) in addition to the data sources.
 
 - API3 allows dApps to recoup the value they otherwise would have bled as MEV through the OEV mechanism, effectively providing dApps an entirely new revenue source.
 
@@ -64,13 +64,13 @@ interface IProxy {
 
 Let us reiterate the related contract docstrings:
 
-> The proxy contracts are generalized to support most types of numerical data feeds.
+> The proxy contracts are generalized to support most types of numerical feeds.
 > This means that the user of this proxy is expected to validate the read values according to the specific use-case.
-> For example, `value` is a signed integer, yet it being negative may not make sense in the case that the data feed represents the spot price of an asset.
+> For example, `value` is a signed integer, yet it being negative may not make sense in the case that the feed represents the spot price of an asset.
 > In that case, the user is responsible with ensuring that `value` is not negative.
 >
-> In the case that the data feed is from a single source, `timestamp` is the system time of the Airnode (API3's first-party oracle node) when it signed the data.
-> In the case that the data feed is from multiple sources, `timestamp` is the median of system times of the Airnodes when they signed the respective data.
+> In the case that the feed is from a single source, `timestamp` is the system time of the Airnode (API3's first-party oracle node) when it signed the data.
+> In the case that the feed is from multiple sources, `timestamp` is the median of system times of the Airnodes when they signed the respective data.
 > There are two points to consider while using `timestamp` in your contract logic:
 >
 > 1. It is based on the system time of the Airnodes, and not the block timestamp.

@@ -8,7 +8,7 @@ interface IProxy {
     function read() external view returns (int224 value, uint32 timestamp);
 }
 
-/// @title Contract for migrating from using Chainlink to API3 data feeds
+/// @title Contract for migrating from using Chainlink to API3 feeds
 /// @notice This contract wraps an API3 feed proxy contract and implements
 /// AggregatorV2V3Interface. By deploying this contract with the appropriate
 /// API3 feed proxy address (refer to https://market.api3.org/), you can use it
@@ -50,7 +50,7 @@ contract Api3ProxyToAggregatorV2V3Interface is AggregatorV2V3Interface {
     /// the dAPI to another feed that has been updated less recently would
     /// result in this function to return a smaller value than it once did.
     /// Therefore, if your contract depends on what `latestTimestamp()` returns
-    /// to never decrease, you are recommended to use an alternative adapter
+    /// to never decrease, you are recommended to use a specialized adapter
     /// (e.g., one that returns `block.timestamp` here).
     function latestTimestamp()
         external
@@ -61,14 +61,14 @@ contract Api3ProxyToAggregatorV2V3Interface is AggregatorV2V3Interface {
         (, timestamp) = IProxy(api3Proxy).read();
     }
 
-    /// @dev Since API3 feeds do not have a concept of rounds, we return the
-    /// block number as an alternative that is similarly guraanteed to never
+    /// @dev Since API3 feeds do not have the concept of rounds, we return the
+    /// block number as an alternative that is similarly guaranteed to never
     /// decrease.
     /// An important point to note is that this may cause two different feed
     /// values to be read with the same round ID, for example, if the feed is
     /// read, updated, and read again in the same block. Therefore, if your
     /// contract depends on values read with a specific round ID to be
-    /// identical, you are recommended to use an alternative adapter (e.g., one
+    /// identical, you are recommended to use a specialized adapter (e.g., one
     /// that keeps the round ID in a counter that gets incremented every time
     /// the feed is read).
     function latestRound() external view override returns (uint256) {

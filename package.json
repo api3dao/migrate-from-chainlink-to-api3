@@ -1,6 +1,6 @@
 {
   "name": "@api3/migrate-from-chainlink-to-api3",
-  "description": "Guide for migrating from using Chainlink to API3 data feeds",
+  "description": "Migration Guide from Chainlink to API3 Feeds",
   "keywords": [
     "api3",
     "data feed",

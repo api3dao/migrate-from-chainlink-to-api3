@@ -157,6 +157,6 @@ contract Api3ProxyToAggregatorV2V3Interface is AggregatorV2V3Interface {
         roundId = uint80(block.number);
         (answer, startedAt) = IProxy(api3Proxy).read();
         updatedAt = startedAt;
-        answeredInRound = uint80(block.number);
+        answeredInRound = roundId;
     }
 }

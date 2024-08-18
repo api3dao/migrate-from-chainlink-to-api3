@@ -37,11 +37,17 @@ Both alternatives can be migrated to using an API3 feed instead through the Api3
     NETWORK=polygon PROXY_ADDRESS=0x98643CB1BDA4060d8BD2dc19bceB0acF6F03ae17 yarn deploy-deterministically
     ```
 
-    You can also just print the expected address after deployment.
+You can also just print the expected address after deployment.
 
-    ```sh
-    PROXY_ADDRESS=0x98643CB1BDA4060d8BD2dc19bceB0acF6F03ae17 yarn print-deterministic-deployment-address
-    ```
+```sh
+PROXY_ADDRESS=0x98643CB1BDA4060d8BD2dc19bceB0acF6F03ae17 yarn print-deterministic-deployment-address
+```
+
+You can flatten the contract to verify it on a block explorer.
+
+```sh
+yarn flatten
+```
 
 ## Differences between API3 and Chainlink feed interfaces
 

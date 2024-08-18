@@ -15,3 +15,5 @@ dist
 /coverage.json
 
 gas_report
+
+*.flat.sol

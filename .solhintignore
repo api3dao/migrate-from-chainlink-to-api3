@@ -17,3 +17,5 @@ dist
 gas_report
 
 contracts/vendor
+
+*.flat.sol

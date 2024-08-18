@@ -8,13 +8,13 @@ interface IProxy {
     function read() external view returns (int224 value, uint32 timestamp);
 }
 
-/// @title Contract for migrating from Chainlink to API3 Feeds
-/// @notice This contract wraps an API3 feed proxy contract and approximates
-/// AggregatorV2V3Interface so that it can be treated as a Chainlink feed
-/// contract. Please refer to the
+/// @title API3 feed contract that partially implements AggregatorV2V3Interface
+/// @notice This contract wraps an API3 feed proxy contract and implements
+/// AggregatorV2V3Interface to partially simulate a Chainlink feed contract.
+/// Please refer to the
 /// https://github.com/api3dao/migrate-from-chainlink-to-api3 README for
-/// guidance about if the approximation is sufficient for a specific use-case.
-contract Api3ProxyToAggregatorV2V3Interface is AggregatorV2V3Interface {
+/// guidance about if doing so is sufficient for a specific use-case.
+contract Api3PartialAggregatorV2V3Interface is AggregatorV2V3Interface {
     error Api3ProxyAddressIsZero();
 
     error RoundIdIsNotCurrent();
@@ -32,11 +32,9 @@ contract Api3ProxyToAggregatorV2V3Interface is AggregatorV2V3Interface {
         api3Proxy = api3Proxy_;
     }
 
-    /// @dev It is assumed that the contract calling this function validates
-    /// the value they get from AggregatorV2V3Interface, e.g., by checking if
-    /// it is a positive value if it is supposed to represent the spot price of
-    /// an asset. Therefore, this contract does not do any validation and
-    /// leaves that responsibility to the caller.
+    /// @dev AggregatorV2V3Interface users are already responsible with
+    /// validating the values that they receive (e.g., revert if the spot price
+    /// of an asset is negative). Therefore, this contract omits validation.
     function latestAnswer() external view override returns (int256 value) {
         (value, ) = IProxy(api3Proxy).read();
     }
@@ -45,8 +43,8 @@ contract Api3ProxyToAggregatorV2V3Interface is AggregatorV2V3Interface {
     /// feed was last updated. On the other hand, an API3 feed timestamp
     /// denotes the point in time at which the first-party oracles signed the
     /// data used to do the last update. We find this to be a reasonable
-    /// approximation in the case that the timestamp is being used to check if
-    /// the last update is stale.
+    /// approximation, considering that usually the timestamp is only used to
+    /// check if the last update is stale.
     function latestTimestamp()
         external
         view
@@ -96,7 +94,7 @@ contract Api3ProxyToAggregatorV2V3Interface is AggregatorV2V3Interface {
 
     /// @dev A unique version is chosen to easily check if an unverified
     /// contract that acts as a Chainlink feed is an
-    /// Api3ProxyToAggregatorV2V3Interface.
+    /// Api3PartialAggregatorV2V3Interface.
     function version() external pure override returns (uint256) {
         return 4913;
     }

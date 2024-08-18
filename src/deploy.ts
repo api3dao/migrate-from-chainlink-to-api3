@@ -1,6 +1,6 @@
 import * as ethers from 'ethers';
 
-import { Api3ProxyToAggregatorV2V3Interface__factory } from '../typechain-types';
+import { Api3PartialAggregatorV2V3Interface__factory } from '../typechain-types';
 
 // https://github.com/Arachnid/deterministic-deployment-proxy/tree/be3c5974db5028d502537209329ff2e730ed336c#proxy-address
 const CREATE2_FACTORY_ADDRESS = '0x4e59b44847b379578588920cA78FbF26c0B4956C';
@@ -12,7 +12,7 @@ function getDeterministicDeploymentAddress(proxyAddress: ethers.AddressLike) {
 
 function getInitcode(proxyAddress: ethers.AddressLike) {
   return ethers.concat([
-    Api3ProxyToAggregatorV2V3Interface__factory.bytecode,
+    Api3PartialAggregatorV2V3Interface__factory.bytecode,
     ethers.AbiCoder.defaultAbiCoder().encode(['address'], [proxyAddress]),
   ]);
 }

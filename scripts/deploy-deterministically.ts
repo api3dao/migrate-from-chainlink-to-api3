@@ -12,8 +12,8 @@ async function main() {
   if (!proxyAddress) {
     throw new Error('Environment variable PROXY_ADDRESS is not defined');
   }
-  const api3ProxyToAggregatorV2V3InterfaceAddress = deploy.getDeterministicDeploymentAddress(proxyAddress);
-  if ((await ethers.provider.getCode(api3ProxyToAggregatorV2V3InterfaceAddress)) === '0x') {
+  const api3PartialAggregatorV2V3InterfaceAddress = deploy.getDeterministicDeploymentAddress(proxyAddress);
+  if ((await ethers.provider.getCode(api3PartialAggregatorV2V3InterfaceAddress)) === '0x') {
     const [deployer] = await ethers.getSigners();
     const receipt = await deployer!.sendTransaction({
       to: deploy.CREATE2_FACTORY_ADDRESS,
@@ -25,11 +25,11 @@ async function main() {
       })
     );
     console.log(
-      `Api3ProxyToAggregatorV2V3Interface for ${proxyAddress} is deployed at ${api3ProxyToAggregatorV2V3InterfaceAddress} of ${hre.network.name}`
+      `Api3PartialAggregatorV2V3Interface for ${proxyAddress} is deployed at ${api3PartialAggregatorV2V3InterfaceAddress} of ${hre.network.name}`
     );
   } else {
     console.log(
-      `Api3ProxyToAggregatorV2V3Interface for ${proxyAddress} was already deployed at ${api3ProxyToAggregatorV2V3InterfaceAddress} of ${hre.network.name}`
+      `Api3PartialAggregatorV2V3Interface for ${proxyAddress} was already deployed at ${api3PartialAggregatorV2V3InterfaceAddress} of ${hre.network.name}`
     );
   }
 }

@@ -5,9 +5,9 @@ async function main() {
   if (!proxyAddress) {
     throw new Error('Environment variable PROXY_ADDRESS is not defined');
   }
-  const api3ProxyToAggregatorV2V3InterfaceAddress = deploy.getDeterministicDeploymentAddress(proxyAddress);
+  const api3PartialAggregatorV2V3InterfaceAddress = deploy.getDeterministicDeploymentAddress(proxyAddress);
   console.log(
-    `Api3ProxyToAggregatorV2V3Interface for ${proxyAddress} is expected to be deployed at ${api3ProxyToAggregatorV2V3InterfaceAddress}`
+    `Api3PartialAggregatorV2V3Interface for ${proxyAddress} is expected to be deployed at ${api3PartialAggregatorV2V3InterfaceAddress}`
   );
 }
 

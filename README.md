@@ -13,7 +13,7 @@ A dApp can be designed to read a Chainlink feed in two ways:
 - The Chainlink feed interface is baked into the dApp.
 - The Chainlink feed interface is integrated into the dApp through an adapter contract.
 
-Both alternatives can be migrated to using an API3 feed instead through the Api3ProxyToAggregatorV2V3Interface contract provided in this repo.
+Both alternatives can be migrated to using an API3 feed instead through the Api3PartialAggregatorV2V3Interface contract provided in this repo.
 
 ## Instructions
 
@@ -23,14 +23,14 @@ Both alternatives can be migrated to using an API3 feed instead through the Api3
     yarn && yarn build
     ```
 
-2.  Create a `.env` file similar to `example.env` with the mnemonic of the wallet that you will use to deploy Api3ProxyToAggregatorV2V3Interface.
+2.  Create a `.env` file similar to `example.env` with the mnemonic of the wallet that you will use to deploy Api3PartialAggregatorV2V3Interface.
 
 3.  Use [API3 Market](https://market.api3.org/) to find the API3 feed you want to use.
 
 4.  Get the address of the proxy contract that belongs to the feed.
     For example, clicking the Integrate button at https://market.api3.org/polygon/eth-usd displays the proxy address `0x98643CB1BDA4060d8BD2dc19bceB0acF6F03ae17`.
 
-5.  Deploy the Api3ProxyToAggregatorV2V3Interface that wraps this proxy.
+5.  Deploy the Api3PartialAggregatorV2V3Interface that wraps this proxy.
     (Note that `NETWORK` is identical to what is in the Market URL.)
 
     ```sh
@@ -108,9 +108,9 @@ There are two important points to note:
    > This increase may not be monotonic.
 2. Chainlink feeds support past updates to be queried.
 
-## When to use Api3ProxyToAggregatorV2V3Interface
+## When to use Api3PartialAggregatorV2V3Interface
 
-Api3ProxyToAggregatorV2V3Interface should be used as is when the following apply:
+Api3PartialAggregatorV2V3Interface should be used as is when the following apply:
 
 - The dApp mainly depends on the current feed value (`latestAnswer()` of AggregatorInterface or `answer` returned by `latestRoundData()` of AggregatorV3Interface).
 - If the dApp uses the current feed timestamp (`latestTimestamp()` of AggregatorInterface or `updatedAt` returned by `latestRoundData()` of AggregatorV3Interface), it is only for a staleness check, e.g., to check if the feed has been updated in the last heartbeat interval.
@@ -118,7 +118,7 @@ Api3ProxyToAggregatorV2V3Interface should be used as is when the following apply
   For example, the dApp only emits `roundId` in an event, and strictly for logging purposes.
 - The off-chain infrastructure does not depend on the events defined in AggregatorInterface.
 
-In contrast, Api3ProxyToAggregatorV2V3Interface should not be used as is, and a more specialized adapter contract should be implemented if any of the following applies:
+In contrast, Api3PartialAggregatorV2V3Interface should not be used as is, and a more specialized adapter contract should be implemented if any of the following applies:
 
 - The dApp logic depends on Chainlink feed idiosyncrasies, such as the round ID increasing with every update.
 - The dApp depends on being able to query past values using `getAnswer()` or `getTimestamp()` of AggregatorInterface, or `getRoundData()` of AggregatorV3Interface.
@@ -130,7 +130,7 @@ An adapter that simulates all Chainlink feed idiosyncrasies would need to create
 For example, `roundId` can be a storage variable that gets incremented each time a function starting with `latest-` is called, during which the respective value and timestamp would also be stored and the event would be emitted.
 Furthermore, users that are planning to refer to a round in the past would need to ensure that such a round has been created by sending a transaction that calls any of the functions that starts with `latest-` at the respective point in time.
 
-Another inconsistency in behavior is that Api3ProxyToAggregatorV2V3Interface does not guarantee that the timestamp of a feed will never decrease.
+Another inconsistency in behavior is that Api3PartialAggregatorV2V3Interface does not guarantee that the timestamp of a feed will never decrease.
 For example, in the case that the data sources of an API3 feed are updated to a new set whose latest updates are less recent, the feed timestamp will decrease.
 If the dApp depends on the feed timestamps to never decrease, `block.timestamp` can be used as the latest timestamp returned by the feed.
 

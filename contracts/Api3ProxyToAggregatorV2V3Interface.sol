@@ -8,15 +8,12 @@ interface IProxy {
     function read() external view returns (int224 value, uint32 timestamp);
 }
 
-/// @title Contract for migrating from using Chainlink to API3 feeds
-/// @notice This contract wraps an API3 feed proxy contract and implements
-/// AggregatorV2V3Interface. By deploying this contract with the appropriate
-/// API3 feed proxy address (refer to https://market.api3.org/), you can use it
-/// as if it is a Chainlink feed contract.
-/// @dev API3 feed proxies are deployed deterministically and their addresses
-/// can be derived using the npm package (at)api3/contracts. This contract is
-/// recommended to be deployed deterministically for its address to be easily
-/// verifiable as well.
+/// @title Contract for migrating from Chainlink to API3 Feeds
+/// @notice This contract wraps an API3 feed proxy contract and approximates
+/// AggregatorV2V3Interface so that it can be treated as a Chainlink feed
+/// contract. Please refer to the
+/// https://github.com/api3dao/migrate-from-chainlink-to-api3 README for
+/// guidance about if the approximation is sufficient for a specific use-case.
 contract Api3ProxyToAggregatorV2V3Interface is AggregatorV2V3Interface {
     error Api3ProxyAddressIsZero();
 
@@ -47,16 +44,9 @@ contract Api3ProxyToAggregatorV2V3Interface is AggregatorV2V3Interface {
     /// @dev A Chainlink feed contract returns the block timestamp at which the
     /// feed was last updated. On the other hand, an API3 feed timestamp
     /// denotes the point in time at which the first-party oracles signed the
-    /// data used to do the last update. We find that to be a reasonable
-    /// approximation in the case that it is being used to check if the last
-    /// update is stale.
-    /// An important point to note is that in the case that the proxy reads a
-    /// dAPI (i.e., a name that is pointed to a Beacon or Beacon set), pointing
-    /// the dAPI to another feed that has been updated less recently would
-    /// result in this function to return a smaller value than it once did.
-    /// Therefore, if your contract depends on what `latestTimestamp()` returns
-    /// to never decrease, you are recommended to use a specialized adapter
-    /// (e.g., one that returns `block.timestamp` here).
+    /// data used to do the last update. We find this to be a reasonable
+    /// approximation in the case that the timestamp is being used to check if
+    /// the last update is stale.
     function latestTimestamp()
         external
         view
@@ -67,15 +57,7 @@ contract Api3ProxyToAggregatorV2V3Interface is AggregatorV2V3Interface {
     }
 
     /// @dev Since API3 feeds do not have the concept of rounds, we return the
-    /// block number as an alternative that is similarly guaranteed to never
-    /// decrease.
-    /// An important point to note is that this may cause two different feed
-    /// values to be read with the same round ID, for example, if the feed is
-    /// read, updated, and read again in the same block. Therefore, if your
-    /// contract depends on values read with a specific round ID to be
-    /// identical, you are recommended to use a specialized adapter (e.g., one
-    /// that keeps the round ID in a counter that gets incremented every time
-    /// the feed is read).
+    /// block number as a replacement that is guaranteed to never decrease.
     function latestRound() external view override returns (uint256) {
         return block.number;
     }
@@ -114,7 +96,7 @@ contract Api3ProxyToAggregatorV2V3Interface is AggregatorV2V3Interface {
 
     /// @dev A unique version is chosen to easily check if an unverified
     /// contract that acts as a Chainlink feed is an
-    /// Api3ProxyToAggregatorV2V3Interface
+    /// Api3ProxyToAggregatorV2V3Interface.
     function version() external pure override returns (uint256) {
         return 4913;
     }
@@ -145,7 +127,7 @@ contract Api3ProxyToAggregatorV2V3Interface is AggregatorV2V3Interface {
     }
 
     /// @dev Similar to `latestAnswer()`, we leave the validation of the
-    /// returned values to the caller.
+    /// returned value to the caller.
     function latestRoundData()
         external
         view

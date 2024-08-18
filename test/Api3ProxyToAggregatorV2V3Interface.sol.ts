@@ -14,9 +14,7 @@ describe('DapiProxy', function () {
       'Api3PartialAggregatorV2V3Interface',
       deployer
     );
-    const api3PartialAggregatorV2V3Interface = await Api3PartialAggregatorV2V3Interface.deploy(
-      mockProxy.getAddress()
-    );
+    const api3PartialAggregatorV2V3Interface = await Api3PartialAggregatorV2V3Interface.deploy(mockProxy.getAddress());
 
     return {
       deployer,
@@ -65,9 +63,7 @@ describe('DapiProxy', function () {
   describe('latestRound', function () {
     it('returns block number', async function () {
       const { api3PartialAggregatorV2V3Interface } = await helpers.loadFixture(deploy);
-      expect(await api3PartialAggregatorV2V3Interface.latestRound()).to.equal(
-        await ethers.provider.getBlockNumber()
-      );
+      expect(await api3PartialAggregatorV2V3Interface.latestRound()).to.equal(await ethers.provider.getBlockNumber());
     });
   });
 

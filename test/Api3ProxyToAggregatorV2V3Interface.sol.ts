@@ -61,49 +61,31 @@ describe('DapiProxy', function () {
   });
 
   describe('latestRound', function () {
-    it('returns block number', async function () {
+    it('reverts', async function () {
       const { api3PartialAggregatorV2V3Interface } = await helpers.loadFixture(deploy);
-      expect(await api3PartialAggregatorV2V3Interface.latestRound()).to.equal(await ethers.provider.getBlockNumber());
+      await expect(api3PartialAggregatorV2V3Interface.latestRound())
+        .to.be.revertedWithCustomError(api3PartialAggregatorV2V3Interface, 'FunctionIsNotSupported')
+        .withArgs();
     });
   });
 
   describe('getAnswer', function () {
-    context('Round ID is the block number', function () {
-      it('returns proxy value', async function () {
-        const { mockProxy, api3PartialAggregatorV2V3Interface } = await helpers.loadFixture(deploy);
-        const blockNumber = await ethers.provider.getBlockNumber();
-        const [value] = await mockProxy.read();
-        expect(await api3PartialAggregatorV2V3Interface.getAnswer(blockNumber)).to.be.equal(value);
-      });
-    });
-    context('Round ID is not the block number', function () {
-      it('reverts', async function () {
-        const { api3PartialAggregatorV2V3Interface } = await helpers.loadFixture(deploy);
-        const blockNumber = await ethers.provider.getBlockNumber();
-        await expect(api3PartialAggregatorV2V3Interface.getAnswer(blockNumber - 1))
-          .to.be.revertedWithCustomError(api3PartialAggregatorV2V3Interface, 'RoundIdIsNotCurrent')
-          .withArgs();
-      });
+    it('reverts', async function () {
+      const { api3PartialAggregatorV2V3Interface } = await helpers.loadFixture(deploy);
+      const blockNumber = await ethers.provider.getBlockNumber();
+      await expect(api3PartialAggregatorV2V3Interface.getAnswer(blockNumber))
+        .to.be.revertedWithCustomError(api3PartialAggregatorV2V3Interface, 'FunctionIsNotSupported')
+        .withArgs();
     });
   });
 
   describe('getTimestamp', function () {
-    context('Round ID is the block number', function () {
-      it('returns proxy timestamp', async function () {
-        const { mockProxy, api3PartialAggregatorV2V3Interface } = await helpers.loadFixture(deploy);
-        const blockNumber = await ethers.provider.getBlockNumber();
-        const [, timestamp] = await mockProxy.read();
-        expect(await api3PartialAggregatorV2V3Interface.getTimestamp(blockNumber)).to.be.equal(timestamp);
-      });
-    });
-    context('Round ID is not the block number', function () {
-      it('reverts', async function () {
-        const { api3PartialAggregatorV2V3Interface } = await helpers.loadFixture(deploy);
-        const blockNumber = await ethers.provider.getBlockNumber();
-        await expect(api3PartialAggregatorV2V3Interface.getTimestamp(blockNumber - 1))
-          .to.be.revertedWithCustomError(api3PartialAggregatorV2V3Interface, 'RoundIdIsNotCurrent')
-          .withArgs();
-      });
+    it('reverts', async function () {
+      const { api3PartialAggregatorV2V3Interface } = await helpers.loadFixture(deploy);
+      const blockNumber = await ethers.provider.getBlockNumber();
+      await expect(api3PartialAggregatorV2V3Interface.getTimestamp(blockNumber))
+        .to.be.revertedWithCustomError(api3PartialAggregatorV2V3Interface, 'FunctionIsNotSupported')
+        .withArgs();
     });
   });
 
@@ -129,57 +111,26 @@ describe('DapiProxy', function () {
   });
 
   describe('getRoundData', function () {
-    context('Round ID is the block number', function () {
-      it('returns approximated round data', async function () {
-        const { mockProxy, api3PartialAggregatorV2V3Interface } = await helpers.loadFixture(deploy);
-        const blockNumber = await ethers.provider.getBlockNumber();
-        const [value, timestamp] = await mockProxy.read();
-        const [roundId, answer, startedAt, updatedAt, answeredInRound] =
-          await api3PartialAggregatorV2V3Interface.getRoundData(blockNumber);
-        expect(roundId).to.equal(blockNumber);
-        expect(answer).to.equal(value);
-        expect(startedAt).to.equal(timestamp);
-        expect(updatedAt).to.equal(timestamp);
-        expect(answeredInRound).to.equal(blockNumber);
-      });
-    });
-    context('Round ID is not the block number', function () {
-      it('reverts', async function () {
-        const { api3PartialAggregatorV2V3Interface } = await helpers.loadFixture(deploy);
-        const blockNumber = await ethers.provider.getBlockNumber();
-        await expect(api3PartialAggregatorV2V3Interface.getRoundData(blockNumber - 1))
-          .to.be.revertedWithCustomError(api3PartialAggregatorV2V3Interface, 'RoundIdIsNotCurrent')
-          .withArgs();
-      });
+    it('reverts', async function () {
+      const { api3PartialAggregatorV2V3Interface } = await helpers.loadFixture(deploy);
+      const blockNumber = await ethers.provider.getBlockNumber();
+      await expect(api3PartialAggregatorV2V3Interface.getRoundData(blockNumber))
+        .to.be.revertedWithCustomError(api3PartialAggregatorV2V3Interface, 'FunctionIsNotSupported')
+        .withArgs();
     });
   });
 
   describe('latestRoundData', function () {
-    context('Block number is castable to uint80', function () {
-      it('returns approximated round data', async function () {
-        const { mockProxy, api3PartialAggregatorV2V3Interface } = await helpers.loadFixture(deploy);
-        const blockNumber = await ethers.provider.getBlockNumber();
-        const [value, timestamp] = await mockProxy.read();
-        const [roundId, answer, startedAt, updatedAt, answeredInRound] =
-          await api3PartialAggregatorV2V3Interface.latestRoundData();
-        expect(roundId).to.equal(blockNumber);
-        expect(answer).to.equal(value);
-        expect(startedAt).to.equal(timestamp);
-        expect(updatedAt).to.equal(timestamp);
-        expect(answeredInRound).to.equal(blockNumber);
-      });
+    it('returns approximated round data', async function () {
+      const { mockProxy, api3PartialAggregatorV2V3Interface } = await helpers.loadFixture(deploy);
+      const [value, timestamp] = await mockProxy.read();
+      const [roundId, answer, startedAt, updatedAt, answeredInRound] =
+        await api3PartialAggregatorV2V3Interface.latestRoundData();
+      expect(roundId).to.equal(0);
+      expect(answer).to.equal(value);
+      expect(startedAt).to.equal(timestamp);
+      expect(updatedAt).to.equal(timestamp);
+      expect(answeredInRound).to.equal(0);
     });
-    // Hardhat does not support block numbers larger than uint64
-    /*
-    context('Block number is not castable to uint80', function () {
-      it('reverts', async function () {
-        const { api3PartialAggregatorV2V3Interface } = await helpers.loadFixture(deploy);
-        await helpers.mineUpTo(2n**80n);
-        await expect(api3PartialAggregatorV2V3Interface.latestRoundData())
-          .to.be.revertedWithCustomError(api3PartialAggregatorV2V3Interface, 'BlockNumberIsNotCastableToUint80')
-          .withArgs();
-      });
-    });
-    */
   });
 });

@@ -121,7 +121,7 @@ Api3PartialAggregatorV2V3Interface should be used as is when the following apply
 In contrast, Api3PartialAggregatorV2V3Interface should not be used as is, and a more specialized adapter contract should be implemented if any of the following applies:
 
 - The dApp logic depends on Chainlink feed idiosyncrasies, such as the round ID increasing with every update.
-- The dApp depends on being able to query past values using `getAnswer()` or `getTimestamp()` of AggregatorInterface, or `getRoundData()` of AggregatorV3Interface.
+- The dApp depends on being able to query past updates using `getAnswer()` or `getTimestamp()` of AggregatorInterface, or `getRoundData()` of AggregatorV3Interface.
 - The off-chain infrastructure depends on the events defined in AggregatorInterface.
 
 ### Specialized adapter contracts

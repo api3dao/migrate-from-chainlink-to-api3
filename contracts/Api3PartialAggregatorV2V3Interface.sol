@@ -17,9 +17,7 @@ interface IProxy {
 contract Api3PartialAggregatorV2V3Interface is AggregatorV2V3Interface {
     error Api3ProxyAddressIsZero();
 
-    error RoundIdIsNotCurrent();
-
-    error BlockNumberIsNotCastableToUint80();
+    error FunctionIsNotSupported();
 
     /// @notice API3 feed proxy address
     address public immutable api3Proxy;
@@ -35,7 +33,13 @@ contract Api3PartialAggregatorV2V3Interface is AggregatorV2V3Interface {
     /// @dev AggregatorV2V3Interface users are already responsible with
     /// validating the values that they receive (e.g., revert if the spot price
     /// of an asset is negative). Therefore, this contract omits validation.
-    function latestAnswer() external view override returns (int256 value) {
+    function latestAnswer()
+        external
+        view
+        virtual
+        override
+        returns (int256 value)
+    {
         (value, ) = IProxy(api3Proxy).read();
     }
 
@@ -48,87 +52,74 @@ contract Api3PartialAggregatorV2V3Interface is AggregatorV2V3Interface {
     function latestTimestamp()
         external
         view
+        virtual
         override
         returns (uint256 timestamp)
     {
         (, timestamp) = IProxy(api3Proxy).read();
     }
 
-    /// @dev Since API3 feeds do not have the concept of rounds, we return the
-    /// block number as a replacement that is guaranteed to never decrease.
-    function latestRound() external view override returns (uint256) {
-        return block.number;
+    /// @dev API3 feeds are updated asynchronously and not in rounds.
+    function latestRound() external view virtual override returns (uint256) {
+        revert FunctionIsNotSupported();
     }
 
-    /// @dev API3 feeds do not allow historical values to be queried. However,
-    /// instead of having this function revert altogether, we allow it to query
-    /// the current value.
-    function getAnswer(uint256 roundId) external view returns (int256 value) {
-        if (roundId != block.number) {
-            revert RoundIdIsNotCurrent();
-        }
-        (value, ) = IProxy(api3Proxy).read();
+    /// @dev Functions that use the round ID as an argument are not supported.
+    function getAnswer(
+        uint256
+    ) external view virtual override returns (int256) {
+        revert FunctionIsNotSupported();
     }
 
-    /// @dev Similar to `getAnswer()`, we allow `getTimestamp()` to query the
-    /// current timestamp.
-    function getTimestamp(
-        uint256 roundId
-    ) external view returns (uint256 timestamp) {
-        if (roundId != block.number) {
-            revert RoundIdIsNotCurrent();
-        }
-        (, timestamp) = IProxy(api3Proxy).read();
+    /// @dev Functions that use the round ID as an argument are not supported.
+    function getTimestamp(uint256) external view virtual returns (uint256) {
+        revert FunctionIsNotSupported();
     }
 
     /// @dev API3 feeds always use 18 decimals.
-    function decimals() external pure override returns (uint8) {
+    function decimals() external view virtual override returns (uint8) {
         return 18;
     }
 
     /// @dev The deterministic proxy address acts as the description, and this
     /// is left empty to save gas on contract deployment.
-    function description() external pure override returns (string memory) {
+    function description()
+        external
+        view
+        virtual
+        override
+        returns (string memory)
+    {
         return "";
     }
 
     /// @dev A unique version is chosen to easily check if an unverified
     /// contract that acts as a Chainlink feed is an
     /// Api3PartialAggregatorV2V3Interface.
-    function version() external pure override returns (uint256) {
+    function version() external view virtual override returns (uint256) {
         return 4913;
     }
 
-    /// @dev Similar to `getAnswer()` and `getTimestamp()`, we allow
-    /// `getRoundData()` to query the current value.
+    /// @dev Functions that use the round ID as an argument are not supported.
     function getRoundData(
-        uint80 _roundId
+        uint80
     )
         external
         view
+        virtual
         override
-        returns (
-            uint80 roundId,
-            int256 answer,
-            uint256 startedAt,
-            uint256 updatedAt,
-            uint80 answeredInRound
-        )
+        returns (uint80, int256, uint256, uint256, uint80)
     {
-        if (_roundId != block.number) {
-            revert RoundIdIsNotCurrent();
-        }
-        roundId = _roundId;
-        (answer, startedAt) = IProxy(api3Proxy).read();
-        updatedAt = startedAt;
-        answeredInRound = _roundId;
+        revert FunctionIsNotSupported();
     }
 
-    /// @dev Similar to `latestAnswer()`, we leave the validation of the
-    /// returned value to the caller.
+    /// @dev Rounds IDs are returned as `0` as invalid round IDs.
+    /// Similar to `latestAnswer()`, we leave the validation of the returned
+    /// value to the caller.
     function latestRoundData()
         external
         view
+        virtual
         override
         returns (
             uint80 roundId,
@@ -138,12 +129,8 @@ contract Api3PartialAggregatorV2V3Interface is AggregatorV2V3Interface {
             uint80 answeredInRound
         )
     {
-        if (block.number > type(uint80).max) {
-            revert BlockNumberIsNotCastableToUint80();
-        }
-        roundId = uint80(block.number);
+        roundId = answeredInRound = 0;
         (answer, startedAt) = IProxy(api3Proxy).read();
         updatedAt = startedAt;
-        answeredInRound = roundId;
     }
 }
